@@ -35,55 +35,153 @@ int hhelp(char *comp){
 
 int version(char *comp){
 			
-	if(strcmp(comp,"--version")==0){
-		printf("version\n");
-	}
-	else	
-		printf("error2\n");
 		
 return 0;		
 }
 
-int show(char *key, char *name){
-	
+int showWK(char *key, char *name[], int k, int f){
 	char mass[80];
-	int i=0,h=0;
-	FILE *fp=fopen(name, "r");
-	if((strcmp(key,"--verbose") ==0 ) || (strcmp(key,"-v") ==0)){
-		printf(" ==> %s <==\n", name);
-		
-			if(!fp)
-			printf("error\n");
-		else
-			{
-
-			}
-
-			fclose(fp);
-	}
-
-	else	
-		printf("error3 \n");
+	int j=0,h=0, count=k+f;
+	char *fname;
 	
+	for(int i=1; i<=count; i++){
+		fname=name[i];
+		printf("%s \n",fname);
+			FILE *fp=fopen(fname, "r");
+
+			if(fp==NULL){
+				printf("Net fayla2\n");
+				return 0;
+			}
+			else
+				{
+					printf("text\n");
+					for(int i=0; i<10; i++){
+					fscanf(fp, "%s", &mass[i]);
+					printf("%s,", &mass[i]);
+					}	
+				}
+				fclose(fp);
+		}
+
+return 0;
+}
+
+								
+int out(int str, char *fname)
+{
+char mass[100];
+FILE *fp=fopen(fname, "r");
+		printf("==> %s <== %d\n", fname,str);
+				
+		if(str>10) str=10;	
+				
+		int tr=0;
+		do{
+					fgets(mass, 100, fp);
+					printf("%s",mass);
+					tr++;
+		}while(tr<str);
+
+return 0;								
+}
+
+int showK(char *key, char *name[], int k, int f){
+
+	int i,h=0, count=k+f, str=0;
+	char *fname;
+	int ch, pre=EOF;
+
+	
+for(i=1; i<=f+1; i++){
+		fname=name[i];
+		
+		FILE *fp=fopen(fname, "r");
+
+		if(fp==NULL){ 
+			printf("Net fayla \n"); 
+		}else{
+
+		if(!fp)
+			printf(" *\n");
+		else{
+				int counter=0;
+				while((ch=fgetc(fp))!=EOF){
+					pre=ch;
+					if(ch=='\n') ++counter;
+				}
+				
+				if(pre==EOF)
+					puts("fayl pust");
+				else 
+				if(pre!='\n'){
+					++counter;
+				}
+				
+				str=counter;
+				printf("counter:%d \n", str);
+			
+			out(str, fname);
+			}
+			fclose(fp);
+}
+}
+
 return 0;	
 }
 
 int main(int argc, char *argv[]){
 
-	int i=0, g=argc-2;
+	int i,j=0, k=0, f=0, g=argc-2;
+	char *massK[100];
+	char *massF[100];
+	char *PmassK;
 	
-	printf("count files= %d \n",g);
-	for(i; i<argc; i++){
-		printf(" %d = %s \n", i, argv[i]);
+	for(i=1; i<argc; i++){
+		if((strcmp(argv[i],"--verbose") ==0 ) ||(strcmp(argv[i],"--help") ==0 )|| (strcmp(argv[i],"--version") ==0 )||(strcmp(argv[i],"--quite") ==0 ) || (strcmp(argv[i],"--silent") ==0 )){
+				k++;
+				massK[i]=argv[i];
+				printf("%d %s \n", i, massK[i]);
+				PmassK=argv[i];
+		}
+		//else 
+	}
+	
+	if(PmassK==NULL || massK[i]==NULL) PmassK="--verbose";
+	
+	
+	for(i=1; i<argc; i++){
+		if((strcmp(argv[i],"--verbose") ==0 ) ||(strcmp(argv[i],"--help") ==0 )|| (strcmp(argv[i],"--version") ==0 )||(strcmp(argv[i],"--quite") ==0 ) || (strcmp(argv[i],"--silent") ==0 )){
+		}else{
+			f++;
+			massF[i]=argv[i];
+			printf("%d) %s \n", i, massF[i]);
+			}
+	}
+			
+	printf("k=%d f=%d %d\n", k, f, argc);//count
+	printf("PmassK=%s\n", PmassK);
+
+
+	/*if(massF){
+		PmassK="--verbose";
+		showK(PmassK, massF, k, f);
+	}else */
+	if((strcmp(PmassK,"--verbose") ==0 )){
+		showK(PmassK, massF, k, f);
+		
+	}else if((strcmp(PmassK,"--silent") ==0 )){
+		showWK(PmassK, massF, k, f);
+		
+	}else if((strcmp(PmassK,"--help") ==0 )){
+		hhelp(PmassK);
+		
+	}else if((strcmp(PmassK,"--version") ==0 )){
+		version(PmassK);	
+	}else {
+		printf("err");
 	}
 
 
-	hhelp(argv[1]);
-	version(argv[1]);
-	
-	for(i=2; i<=g+1;i++)
-	show(argv[1], argv[i]);//key, name of files
-	
-	
 return 0;	
 }
